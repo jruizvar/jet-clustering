@@ -33,15 +33,25 @@ The requirements to execute the code are
 -   Machine Learning in Python (http://scikit-learn.org)
 -   Python 3.X (https://www.python.org/downloads/)
 
-The plot below shows the real classification and the different predictions obtained with scikit-learn, for the first ten event in the dataset:
+The plots below show the real classification and the predictions obtained with scikit-learn for the first ten events in the dataset:
 
+-   [1_1_1.csv](csvFiles/1_1_1.csv)
 ![](outPlots/1_1_1.png)
+-   [1_1_2.csv](csvFiles/1_1_2.csv)
 ![](outPlots/1_1_2.png)
+-   [1_1_3.csv](csvFiles/1_1_3.csv)
 ![](outPlots/1_1_3.png)
+-   [1_1_5.csv](csvFiles/1_1_5.csv)
 ![](outPlots/1_1_5.png)
+-   [1_1_6.csv](csvFiles/1_1_6.csv)
 ![](outPlots/1_1_6.png)
+-   [1_1_7.csv](csvFiles/1_1_7.csv)
 ![](outPlots/1_1_7.png)
+-   [1_1_9.csv](csvFiles/1_1_9.csv)
 ![](outPlots/1_1_9.png)
+-   [1_1_11.csv](csvFiles/1_1_11.csv)
 ![](outPlots/1_1_11.png)
+-   [1_1_13.csv](csvFiles/1_1_13.csv)
 ![](outPlots/1_1_13.png)
+-   [1_1_15.csv](csvFiles/1_1_15.csv)
 ![](outPlots/1_1_15.png)
