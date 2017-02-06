@@ -9,7 +9,11 @@ cmsenv
 mkdir csvFiles; python jetConstituents.py
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The code picks the first 10 events from the dataset BulkGravToZZToZhadZhad. For each event, it creates a csv file with the list of jet constituents. 
+The code picks the first 10 events from the dataset 
+
+-   [BulkGravToZZToZhadZhad_narrow_M-1800_13TeV-madgraph](jetConstituents.py#L27). 
+
+For each event, it creates a csv file with the list of jet constituents. 
 
 ## Exploring csv files
 
