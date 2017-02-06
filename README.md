@@ -1,4 +1,4 @@
-# Jet Clustering with Python scikit-learn
+# Jet clustering with [scikit-learn](http://scikit-learn.org)
 
 -   Instruction to setup working area and produce the csvFiles
 
@@ -16,7 +16,7 @@ Each csv file contains the list of jet constituents with kinematic information n
 
 -   [1_1_1.csv](csvFiles/1_1_1.csv)
 
-The momentum coordinates are normalized such that Px**2 + Py**2 + Pz**2 = 1.
+The momentum coordinates are normalized such that Px * Px + Py * Py + Pz * Pz = 1.
 
 Analysis of csv files
 =====================
@@ -31,6 +31,6 @@ The requirements to execute the code are
 -   Machine Learning in Python (http://scikit-learn.org)
 -   Python 3.X (https://www.python.org/downloads/)
 
-An example of output plot is:
+Example of output:
 
--   [1_1_1.png](outPlots/1_1_1.png)
+![](outPlots/1_1_1.png)
