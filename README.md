@@ -1,6 +1,6 @@
 # Jet clustering with [scikit-learn](http://scikit-learn.org)
 
--   Instruction to setup the working area and produce the csvFiles
+Instructions to setup the working area in **lxplus** in order to generate the csvFiles:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 cmsrel CMSSW_8_0_26_patch1
@@ -9,13 +9,17 @@ cmsenv
 mkdir csvFiles; python jetConstituents.py
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+The code picks the first 10 events from the dataset BulkGravToZZToZhadZhad. For each event, it creates a csv file with the list of jet constituents. 
+
 ## Exploring csv files
 
 Each csv file contains the list of jet constituents with kinematic information necessary to seed the clusterization algorithm later on. The name of the csv file follows the syntax **run_lumi_event.csv**, for instance: 
 
 -   [1_1_1.csv](csvFiles/1_1_1.csv)
 
-The momentum coordinates are normalized such that Px * Px + Py * Py + Pz * Pz = 1.
+The momentum coordinates are normalized such that
+
+-   Px * Px + Py * Py + Pz * Pz = 1.
 
 ## Analysis of csv files
 
@@ -29,6 +33,15 @@ The requirements to execute the code are
 -   Machine Learning in Python (http://scikit-learn.org)
 -   Python 3.X (https://www.python.org/downloads/)
 
-The plot below shows the real classification and the different prediction obtained with scikit-learn, for the first event [1_1_1.csv](csvFiles/1_1_1.csv):
+The plot below shows the real classification and the different predictions obtained with scikit-learn, for the first ten event in the dataset:
 
 ![](outPlots/1_1_1.png)
+![](outPlots/1_1_2.png)
+![](outPlots/1_1_3.png)
+![](outPlots/1_1_5.png)
+![](outPlots/1_1_6.png)
+![](outPlots/1_1_7.png)
+![](outPlots/1_1_9.png)
+![](outPlots/1_1_11.png)
+![](outPlots/1_1_13.png)
+![](outPlots/1_1_15.png)
