@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# -*- coding: UTF-8 *
+# vim :et:
 
 import sys
 import math
@@ -9,32 +11,42 @@ import matplotlib
 matplotlib.use('Agg')
 
 from matplotlib import pyplot as plt
-from sklearn.cluster import KMeans
+from sklearn.cluster import KMeans, AffinityPropagation
 
 params = plt.rcParams['axes.prop_cycle']
 colors = params.by_key()['color']
 
 def make_plot(name, data):
-    fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(7,4), sharey=True)
-    axes[0].set_title('Real classification')
+	fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(11,4), sharey=True)
+	axes[0].set_title('Real classification')
 
-    clusters = data.jet.unique()
-    model = KMeans(init='k-means++', n_clusters=len(clusters))
-    model.fit_predict(data[['px','py','pz']].as_matrix())
-    data['KMeans'] = model.labels_
+	clusters = data.jet.unique()
+	X = data[['px','py','pz']].as_matrix()
 
-    for c in clusters:
-        data[data.jet == c].plot.scatter(x='eta', y='phi', color=colors[c], ax=axes[0])
+	# KMeans
+	kmeans = KMeans(init='k-means++', n_clusters=len(clusters))
+	kmeans.fit_predict(X)
+	data['KMeans'] = kmeans.labels_
 
-    axes[1].set_title('KMeans with %d clusters' % (len(clusters)))
+	# Affinity Propagation
+	af = AffinityPropagation(preference=-50).fit(X)
+	data['AfProp'] = af.labels_
 
-    for c in data.KMeans.unique():
-        data[data.KMeans == c].plot.scatter(x='eta', y='phi', color=colors[c], ax=axes[1])
+	for c in clusters:
+		data[data.jet == c].plot.scatter(x='eta', y='phi', color=colors[c], ax=axes[0])
 
-    plt.tight_layout()
-    plt.savefig(name)
+	axes[1].set_title('KMeans with %d clusters' % (len(clusters)))
+	for c in data.KMeans.unique():
+		data[data.KMeans == c].plot.scatter(x='eta', y='phi', color=colors[c], ax=axes[1])
+
+	axes[2].set_title('Affinity Propagation')
+	for c in data.AfProp.unique():
+		data[data.AfProp == c].plot.scatter(x='eta', y='phi', color=colors[c%len(colors)], ax=axes[2])
+
+	plt.tight_layout()
+	plt.savefig(name)
 
 if __name__ == "__main__":
-    data = pandas.read_csv(sys.argv[1])
-    name = sys.argv[1].replace('.csv','.png')
-    make_plot(name, data)
+	data = pandas.read_csv(sys.argv[1])
+	name = sys.argv[1].replace('.csv','.png')
+	make_plot(name, data)
