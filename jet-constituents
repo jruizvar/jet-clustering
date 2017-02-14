@@ -24,10 +24,10 @@ def process(events, n):
         if e >= n: return
 
         event.getByLabel(label, jets)
-        datafile = 'event%d.txt' % event.eventAuxiliary().event()
+        datafile = 'event-%04d.csv' % event.eventAuxiliary().event()
 
         with open(os.path.join(datadir, datafile), 'w') as f:
-            f.write("# jet,constituent,eta,phi,px,py,pz,p\n")
+            f.write("jet,constituent,eta,phi,px,py,pz,p\n")
 
             for j, jet in enumerate(jets.product()):
                 constituents = []
