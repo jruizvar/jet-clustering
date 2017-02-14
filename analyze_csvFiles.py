@@ -1,57 +1,36 @@
-"""
-Description:  The program receives a csv file
-
-              Computes clustering of jet contituents with K-Means
-
-              Returns a plot with syntax name run_lumi_event.png
-
-
-Requirements: Pandas Data Analysis Library (http://pandas.pydata.org)
-
-              scikit-learn: Machine Learning in Python (http://scikit-learn.org)
-
-              Python 3.X 
-
-
-Usage:        python3 analyze_csvFiles.py run_lumi_event
-
-"""
+#!/usr/bin/env python
 
 import sys
 import math
-import pandas as pd
+import pandas
 import matplotlib.pyplot as plt
 
 from sklearn.cluster import KMeans
 
-# Pick data
-data = pd.read_csv('csvFiles/'+sys.argv[1]+'.csv')
+params = plt.rcParams['axes.prop_cycle']
+colors = params.by_key()['color']
 
-# Get cartesian coordinates
-X = data[['Px','Py','Pz']].as_matrix()
+def make_plot(name, data):
+	fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(7,4), sharey=True)
+	axes[0].set_title('Real classification')
 
-# Cosmetics
-prop_cycle = plt.rcParams['axes.prop_cycle']
-colors = prop_cycle.by_key()['color']
-fig, axes = plt.subplots(nrows=1, ncols=5, figsize=(16,4), sharey=True)
-axes[0].set_title('Real classification')
+	clusters = data.jet.unique()
+	model = KMeans(init='k-means++', n_clusters=len(clusters))
+	model.fit_predict(data[['px','py','pz']].as_matrix())
+	data['KMeans'] = model.labels_
 
-# Plot real classification
-for i in data.Jet.unique():
-    jet = data[data.Jet == i] 
-    jet.plot.scatter(x='Eta', y='Phi', color=colors[i], label='Jet %d'%(i), ax=axes[0])
+	for c in clusters:
+		data[data.jet == c].plot.scatter(x='eta', y='phi', color=colors[c], ax=axes[0])
 
-# Compute clustering with K-Means
-for k in range(1,5):
-    model = KMeans(init='k-means++', n_clusters=k)
-    model.fit_predict(X)
-    data['Prediction'] = model.labels_
-    axes[k].set_title('%d cluster classification'%(k))
-    # Plot K-Means prediction
-    for i in data.Prediction.unique():
-        jet = data[data.Prediction == i] 
-        jet.plot.scatter(x='Eta', y='Phi', color=colors[i], label='Jet %d'%(i), ax=axes[k])
+	axes[1].set_title('KMeans with %d clusters' % (clusters))
 
-plt.tight_layout()
-plt.savefig('outPlots/'+sys.argv[1]+'.png')
-plt.close()
+	for c in data.Kmeans.unique():
+		data[data.KMeans == c].plot.scatter(x='eta', y='phi', color=colors[c], ax=axes[1])
+
+	plt.tight_layout()
+	plt.savefig(name)
+
+if __name__ == "__main__":
+    data = pandas.read_csv(sys.argv[1])
+	name = sys.argv[1].replace('.csv','.pdf'))
+	make_plot(name, data)
