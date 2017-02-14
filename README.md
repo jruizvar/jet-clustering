@@ -27,10 +27,10 @@ follow the syntax **event-%04d.csv**. The momentum coordinates are normalized.
 
 ## Plotting data and clusters
 
-The `jet-cluster` script takes a data file as argument and generates a PDF file
+The `jet-cluster` script takes a data file as argument and generates a PNG file
 with the plots of real and fitted clusters.
 
 ### Example
 
-![](data/event-0005.pdf)
+![](data/event-0005.png)
 

@@ -36,5 +36,5 @@ def make_plot(name, data):
 
 if __name__ == "__main__":
     data = pandas.read_csv(sys.argv[1])
-    name = sys.argv[1].replace('.csv','.pdf')
+    name = sys.argv[1].replace('.csv','.png')
     make_plot(name, data)
