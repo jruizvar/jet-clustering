@@ -34,3 +34,4 @@ with the plots of real and fitted clusters.
 
 ![](data/event-0005.png)
 
+![](data/event-0005-3d.png)
