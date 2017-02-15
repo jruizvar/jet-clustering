@@ -1,0 +1,66 @@
+#!/usr/bin/env python
+# -*- coding: UTF-8 *
+# vim :et:
+
+import sys
+import math
+import pandas
+import matplotlib
+
+# avoid problem when no GUI is available
+matplotlib.use('Agg')
+
+from matplotlib import pyplot as plt
+
+params = plt.rcParams['axes.prop_cycle']
+colors = params.by_key()['color']
+
+from sklearn.cluster import KMeans
+from sklearn.cluster import AffinityPropagation
+from sklearn.cluster import MeanShift
+from sklearn.cluster import SpectralClustering
+from sklearn.cluster import AgglomerativeClustering
+from sklearn.cluster import DBSCAN
+
+def make_subplot(data, i, j, c, axis):
+	data.plot.scatter(x='eta', y='phi', color=colors[c%len(colors)], ax=axis)
+
+def make_plot(name, data):
+	fig, ax = plt.subplots(nrows=2, ncols=3, figsize=(16,9), sharey=True)
+
+	clusters = len(data.jet.unique())
+	X = data[['px','py','pz']].as_matrix()
+
+	# Mean Shift
+	data['ms'] = MeanShift().fit(X).labels_
+
+	# DBSCAN
+	data['dbscan'] = DBSCAN().fit(X).labels_
+
+	# KMeans
+	kmeans = KMeans(init='k-means++', n_clusters=clusters)
+	kmeans.fit_predict(X)
+	data['kmeans'] = kmeans.labels_
+
+	# Spectral Clustering
+	data['spectral'] = SpectralClustering(n_clusters=clusters).fit(X).labels_
+
+	# Agglomerative Clustering
+	data['agg'] = AgglomerativeClustering(n_clusters=clusters).fit(X).labels_
+
+	cols  = [ [ 'jet', 'ms', 'dbscan' ], [ 'kmeans', 'spectral', 'agg' ] ]
+	title = [ [ 'Data', 'Mean Shift', 'DBSCAN' ], [ 'KMeans', 'Spectral Clustering', 'Agglomerative Clustering' ] ]
+
+	for i in [0,1]:
+		for j in [0,1,2]:
+			for c in data[cols[i][j]].unique():
+				ax[i, j].set_title(title[i][j])
+				make_subplot(data[data[cols[i][j]] == c], i, j, c, ax[i, j])
+
+	plt.tight_layout()
+	plt.savefig(name)
+
+if __name__ == "__main__":
+	data = pandas.read_csv(sys.argv[1])
+	name = sys.argv[1].replace('.csv','.png')
+	make_plot(name, data)
