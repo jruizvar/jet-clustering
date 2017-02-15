@@ -11,37 +11,66 @@ import matplotlib
 matplotlib.use('Agg')
 
 from matplotlib import pyplot as plt
-from sklearn.cluster import KMeans, AffinityPropagation
 
 params = plt.rcParams['axes.prop_cycle']
 colors = params.by_key()['color']
 
-def make_plot(name, data):
-	fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(11,4), sharey=True)
-	axes[0].set_title('Real classification')
+from sklearn.cluster import KMeans
+from sklearn.cluster import AffinityPropagation
+from sklearn.cluster import MeanShift
+from sklearn.cluster import SpectralClustering
+from sklearn.cluster import AgglomerativeClustering
+from sklearn.cluster import DBSCAN
 
-	clusters = data.jet.unique()
+def make_plot(name, data):
+	fig, ax = plt.subplots(nrows=2, ncols=3, figsize=(16,9), sharey=True)
+
+	clusters = len(data.jet.unique())
 	X = data[['px','py','pz']].as_matrix()
 
 	# KMeans
-	kmeans = KMeans(init='k-means++', n_clusters=len(clusters))
+	kmeans = KMeans(init='k-means++', n_clusters=clusters)
 	kmeans.fit_predict(X)
 	data['KMeans'] = kmeans.labels_
 
 	# Affinity Propagation
-	af = AffinityPropagation(preference=-50).fit(X)
-	data['AfProp'] = af.labels_
+	data['AfProp'] = AffinityPropagation(damping=0.95).fit(X).labels_
 
-	for c in clusters:
-		data[data.jet == c].plot.scatter(x='eta', y='phi', color=colors[c], ax=axes[0])
+	# Mean Shift
+	data['MeanShift'] = MeanShift().fit(X).labels_
 
-	axes[1].set_title('KMeans with %d clusters' % (len(clusters)))
+	# Spectral Clustering
+	data['Spectral'] = SpectralClustering(n_clusters=clusters).fit(X).labels_
+
+	# Agglomerative Clustering
+	data['Agglomerative'] = AgglomerativeClustering(n_clusters=clusters).fit(X).labels_
+
+	# DBSCAN
+	data['DBSCAN'] = DBSCAN().fit(X).labels_
+
+	ax[0, 0].set_title('Real classification')
+	for c in data.jet.unique():
+		data[data.jet == c].plot.scatter(x='eta', y='phi', color=colors[c%len(colors)], ax=ax[0, 0])
+
+	ax[0, 1].set_title('KMeans with %d clusters' % (clusters))
 	for c in data.KMeans.unique():
-		data[data.KMeans == c].plot.scatter(x='eta', y='phi', color=colors[c], ax=axes[1])
+		data[data.KMeans == c].plot.scatter(x='eta', y='phi', color=colors[c%len(colors)], ax=ax[0, 1])
 
-	axes[2].set_title('Affinity Propagation')
+	ax[0, 2].set_title('Affinity Propagation')
 	for c in data.AfProp.unique():
-		data[data.AfProp == c].plot.scatter(x='eta', y='phi', color=colors[c%len(colors)], ax=axes[2])
+		data[data.AfProp == c].plot.scatter(x='eta', y='phi', color=colors[c%len(colors)], ax=ax[0, 2])
+
+	ax[1, 0].set_title('Spectral Clustering')
+	for c in data.Spectral.unique():
+		data[data.Spectral == c].plot.scatter(x='eta', y='phi', color=colors[c%len(colors)], ax=ax[1, 0])
+
+	ax[1, 1].set_title('Agglomerative Clustering')
+	for c in data.Agglomerative.unique():
+		data[data.Agglomerative == c].plot.scatter(x='eta', y='phi', color=colors[c%len(colors)], ax=ax[1, 1])
+
+	ax[1, 2].set_title('DBSCAN')
+	for c in data.DBSCAN.unique():
+		data[data.DBSCAN == c].plot.scatter(x='eta', y='phi', color=colors[c%len(colors)], ax=ax[1, 2])
 
 	plt.tight_layout()
 	plt.savefig(name)
