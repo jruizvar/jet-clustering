@@ -10,7 +10,7 @@ cmsenv
 git clone git@github.com:amadio/jet-clustering.git
 cd jet-clustering
 jet-constituents 10
-for csv in data/\*.csv; do jet-cluster ${csv}; done
+for csv in data/\*.csv; do jet-clusters ${csv}; done
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The code picks the first **n** events from the dataset 
@@ -27,7 +27,7 @@ follow the syntax **event-%04d.csv**. The momentum coordinates are normalized.
 
 ## Plotting data and clusters
 
-The `jet-cluster` script takes a data file as argument and generates a PNG file
+The `jet-clusters` script takes a data file as argument and generates a PNG file
 with the plots of real and fitted clusters.
 
 ### Example
