@@ -30,67 +30,33 @@ def make_plot(name, data):
 	clusters = len(data.jet.unique())
 	X = data[['px','py','pz']].as_matrix()
 
+	# Mean Shift
+	data['ms'] = MeanShift().fit(X).labels_
+
+	# DBSCAN
+	data['dbscan'] = DBSCAN().fit(X).labels_
+
 	# KMeans
 	kmeans = KMeans(init='k-means++', n_clusters=clusters)
 	kmeans.fit_predict(X)
-	data['KMeans'] = kmeans.labels_
-
-	# Affinity Propagation
-	data['AfProp'] = AffinityPropagation(damping=0.95).fit(X).labels_
-
-	# Mean Shift
-	data['MeanShift'] = MeanShift().fit(X).labels_
+	data['kmeans'] = kmeans.labels_
 
 	# Spectral Clustering
-	data['Spectral'] = SpectralClustering(n_clusters=clusters).fit(X).labels_
+	data['spectral'] = SpectralClustering(n_clusters=clusters).fit(X).labels_
 
 	# Agglomerative Clustering
-	data['Agglomerative'] = AgglomerativeClustering(n_clusters=clusters).fit(X).labels_
+	data['agg'] = AgglomerativeClustering(n_clusters=clusters).fit(X).labels_
 
-	# DBSCAN
-	data['DBSCAN'] = DBSCAN().fit(X).labels_
+	column = [ 'jet', 'ms', 'dbscan', 'kmeans', 'spectral', 'agg' ]
+	title  = [ 'Data', 'Mean Shift', 'DBSCAN', 'KMeans', 'Spectral Clustering', 'Agglomerative Clustering' ]
 
-	ax = fig.add_subplot(2, 3, 1, projection='3d')
-	ax.set_axis_off()
-	ax.set_title('Real classification')
-	for j in data.jet.unique():
-		jet = data[data.jet == j]
-		ax.quiver(0, 0, 0, jet.px, jet.py, jet.pz, length=jlength, color=colors[j%len(colors)])
-
-	ax = fig.add_subplot(2, 3, 2, projection='3d')
-	ax.set_axis_off()
-	ax.set_title('KMeans')
-	for j in data.KMeans.unique():
-		jet = data[data.KMeans == j]
-		ax.quiver(0, 0, 0, jet.px, jet.py, jet.pz, length=jlength, color=colors[j%len(colors)])
-
-	ax = fig.add_subplot(2, 3, 3, projection='3d')
-	ax.set_axis_off()
-	ax.set_title('Affinity Propagation')
-	for j in data.AfProp.unique():
-		jet = data[data.AfProp == j]
-		ax.quiver(0, 0, 0, jet.px, jet.py, jet.pz, length=jlength, color=colors[j%len(colors)])
-
-	ax = fig.add_subplot(2, 3, 4, projection='3d')
-	ax.set_axis_off()
-	ax.set_title('Spectral Clustering')
-	for j in data.Spectral.unique():
-		jet = data[data.Spectral == j]
-		ax.quiver(0, 0, 0, jet.px, jet.py, jet.pz, length=jlength, color=colors[j%len(colors)])
-
-	ax = fig.add_subplot(2, 3, 5, projection='3d')
-	ax.set_axis_off()
-	ax.set_title('Agglomerative Clustering')
-	for j in data.Agglomerative.unique():
-		jet = data[data.Agglomerative == j]
-		ax.quiver(0, 0, 0, jet.px, jet.py, jet.pz, length=jlength, color=colors[j%len(colors)])
-
-	ax = fig.add_subplot(2, 3, 6, projection='3d')
-	ax.set_axis_off()
-	ax.set_title('DBSCAN')
-	for j in data.DBSCAN.unique():
-		jet = data[data.DBSCAN == j]
-		ax.quiver(0, 0, 0, jet.px, jet.py, jet.pz, length=jlength, color=colors[j%len(colors)])
+	for i in range(len(column)):
+		ax = fig.add_subplot(2, 3, i+1, projection='3d')
+		ax.set_title(title[i])
+		ax.set_axis_off()
+		for j in data[column[i]].unique():
+			jet = data[data[column[i]] == j]
+			ax.quiver(0, 0, 0, jet.px, jet.py, jet.pz, length=jlength, color=colors[j%len(colors)])
 
 	plt.tight_layout()
 	plt.savefig(name)
