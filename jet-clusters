@@ -39,8 +39,7 @@ def make_plot(name, data):
 
 	# KMeans
 	kmeans = KMeans(init='k-means++', n_clusters=clusters)
-	kmeans.fit_predict(X)
-	data['kmeans'] = kmeans.labels_
+	data['kmeans'] = kmeans.fit(X).labels_
 
 	# Spectral Clustering
 	data['spectral'] = SpectralClustering(n_clusters=clusters).fit(X).labels_

@@ -4,8 +4,8 @@ Instructions to setup the working area on **lxplus**:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 export SCRAM_ARCH=slc6_amd64_gcc530
-cmsrel CMSSW_8_0_26_patch1
-cd CMSSW_8_0_26_patch1/src
+cmsrel CMSSW_8_0_26_patch2
+cd CMSSW_8_0_26_patch2/src
 cmsenv
 git clone git@github.com:amadio/jet-clustering.git
 cd jet-clustering
@@ -30,8 +30,14 @@ follow the syntax **event-%04d.csv**. The momentum coordinates are normalized.
 The `jet-clusters` script takes a data file as argument and generates a PNG file
 with the plots of real and fitted clusters.
 
-### Example
+### Example using RecoJets
 
 ![](data/event-0005.png)
 
 ![](data/event-0005-3d.png)
+
+### Example using GenJets
+
+![](data/genEvent-0005.png)
+
+![](data/genEvent-0005-3d.png)
