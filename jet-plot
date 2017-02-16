@@ -12,13 +12,17 @@ params = plt.rcParams['axes.prop_cycle']
 colors = params.by_key()['color']
 
 def make_plot(data):
-	fig = plt.figure()
-	ax = fig.gca(projection='3d')
+	ax = plt.figure().gca(projection='3d')
 	ax.set_axis_off()
+	ax.set_xlim3d(-1,1)
+	ax.set_ylim3d(-1,1)
+	ax.set_zlim3d(-1,1)
 
 	for j in data.jet.unique():
 		jet = data[data.jet == j]
-		ax.quiver(0, 0, 0, jet.px, jet.py, jet.pz, length=0.1, color=colors[j%len(colors)])
+		ax.quiver(0, 0, 0, jet.px, jet.py, jet.pz, \
+			arrow_length_ratio=0.05, \
+			pivot='tail', color=colors[j%len(colors)])
 
 	plt.show()
 

@@ -26,7 +26,6 @@ from sklearn.cluster import DBSCAN
 def make_plot(name, data):
 	fig = plt.figure(figsize=(16,9))
 
-	jlength = 0.1
 	clusters = len(data.jet.unique())
 	X = data[['px','py','pz']].as_matrix()
 
@@ -52,11 +51,16 @@ def make_plot(name, data):
 
 	for i in range(len(column)):
 		ax = fig.add_subplot(2, 3, i+1, projection='3d')
-		ax.set_title(title[i])
 		ax.set_axis_off()
+		ax.set_xlim3d(-1,1)
+		ax.set_ylim3d(-1,1)
+		ax.set_zlim3d(-1,1)
+		ax.set_title(title[i])
 		for j in data[column[i]].unique():
 			jet = data[data[column[i]] == j]
-			ax.quiver(0, 0, 0, jet.px, jet.py, jet.pz, length=jlength, color=colors[j%len(colors)])
+			ax.quiver(0, 0, 0, jet.px, jet.py, jet.pz,\
+				pivot='tail', arrow_length_ratio=0.05,\
+				color=colors[j%len(colors)])
 
 	plt.tight_layout()
 	plt.savefig(name)
