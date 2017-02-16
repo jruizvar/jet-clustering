@@ -52,9 +52,9 @@ def make_plot(name, data):
 	for i in range(len(column)):
 		ax = fig.add_subplot(2, 3, i+1, projection='3d')
 		ax.set_axis_off()
-		ax.set_xlim3d(-1,1)
-		ax.set_ylim3d(-1,1)
-		ax.set_zlim3d(-1,1)
+		ax.set_xlim3d(-0.7, 0.7)
+		ax.set_ylim3d(-0.7, 0.7)
+		ax.set_zlim3d(-0.7, 0.7)
 		ax.set_title(title[i])
 		for j in data[column[i]].unique():
 			jet = data[data[column[i]] == j]
