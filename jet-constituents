@@ -55,7 +55,9 @@ def process(events, isGen, n):
                 vjet = 'nan'
                 if isGen:
                     for p in pruned:
-                        if abs(p.pdgId()==23) and vjet != True:
+                        if vjet == True:
+                            break
+                        elif abs(p.pdgId()==23):
                             vjet = deltaR(jet, p) < 0.1
 
                 constituents = []
