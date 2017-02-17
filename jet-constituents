@@ -22,6 +22,8 @@ use_generator_level = True
 
 Z_boson_pdgId = 23 
 
+match_threshold = 0.1
+
 def deltaR(a,b):
     dphi = abs(a.phi()-b.phi());
     if dphi > pi: dphi = 2*pi-dphi
@@ -32,9 +34,9 @@ def process(events, isGen, n):
     jets  = Handle("std::vector<pat::Jet>")
 
     if isGen:
-        label    = "slimmedGenJetsAK8"
-        jets     = Handle("std::vector<reco::GenJet>")
-        gens     = Handle("std::vector<reco::GenParticle>")
+        label = "slimmedGenJetsAK8"
+        jets  = Handle("std::vector<reco::GenJet>")
+        gens  = Handle("std::vector<reco::GenParticle>")
 
     for e, event in enumerate(events):
         if e >= n: return
@@ -57,7 +59,7 @@ def process(events, isGen, n):
                         if vjet == True:
                             break
                         elif abs(p.pdgId()) == Z_boson_pdgId:
-                            vjet = deltaR(jet, p) < 0.1
+                            vjet = deltaR(jet, p) < match_threshold
 
                 constituents = []
                 for candidate in [ jet.daughter(i) for i in range(jet.numberOfDaughters()) ]:
