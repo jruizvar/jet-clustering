@@ -20,21 +20,21 @@ default_file = "root://eoscms.cern.ch//eos/cms/store/mc/RunIISummer16MiniAODv2/B
 
 use_generator_level = True 
 
+Z_boson_pdgId = 23 
+
 def deltaR(a,b):
     dphi = abs(a.phi()-b.phi());
     if dphi > pi: dphi = 2*pi-dphi
     return hypot(a.eta()-b.eta(),dphi)
 
 def process(events, isGen, n):
-    labelPruned  = "prunedGenParticles"
-    handlePruned = Handle("std::vector<reco::GenParticle>")
-
     label = "slimmedJetsAK8"
     jets  = Handle("std::vector<pat::Jet>")
 
     if isGen:
-        label = "slimmedGenJetsAK8"
-        jets  = Handle("std::vector<reco::GenJet>")
+        label    = "slimmedGenJetsAK8"
+        jets     = Handle("std::vector<reco::GenJet>")
+        gens     = Handle("std::vector<reco::GenParticle>")
 
     for e, event in enumerate(events):
         if e >= n: return
@@ -43,8 +43,7 @@ def process(events, isGen, n):
         datafile = 'event-%04d.csv' % event.eventAuxiliary().event()
 
         if isGen:
-            event.getByLabel(labelPruned, handlePruned)
-            pruned = handlePruned.product()
+            event.getByLabel("prunedGenParticles", gens)
             datafile = 'genEvent-%04d.csv' % event.eventAuxiliary().event()
 
         with open(os.path.join(datadir, datafile), 'w') as f:
@@ -54,10 +53,10 @@ def process(events, isGen, n):
                 # MC Truth matching
                 vjet = 'nan'
                 if isGen:
-                    for p in pruned:
+                    for p in gens.product():
                         if vjet == True:
                             break
-                        elif abs(p.pdgId()==23):
+                        elif abs(p.pdgId()) == Z_boson_pdgId:
                             vjet = deltaR(jet, p) < 0.1
 
                 constituents = []
