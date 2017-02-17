@@ -10,15 +10,25 @@ ROOT.gSystem.Load("libFWCoreFWLite.so");
 ROOT.gSystem.Load("libDataFormatsFWLite.so");
 ROOT.FWLiteEnabler.enable()
 
+from math import hypot, pi
+
 from DataFormats.FWLite import Events, Handle
 
 datadir = os.path.join(os.getcwd(), 'data')
 
 default_file = "root://eoscms.cern.ch//eos/cms/store/mc/RunIISummer16MiniAODv2/BulkGravToZZToZhadZhad_narrow_M-1800_13TeV-madgraph/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/60000/48313E83-C4BD-E611-9A1C-001C23BED459.root"
 
-use_generator_level = False
+use_generator_level = True 
+
+def deltaR(a,b):
+    dphi = abs(a.phi()-b.phi());
+    if dphi > pi: dphi = 2*pi-dphi
+    return hypot(a.eta()-b.eta(),dphi)
 
 def process(events, isGen, n):
+    labelPruned  = "prunedGenParticles"
+    handlePruned = Handle("std::vector<reco::GenParticle>")
+
     label = "slimmedJetsAK8"
     jets  = Handle("std::vector<pat::Jet>")
 
@@ -33,12 +43,21 @@ def process(events, isGen, n):
         datafile = 'event-%04d.csv' % event.eventAuxiliary().event()
 
         if isGen:
+            event.getByLabel(labelPruned, handlePruned)
+            pruned = handlePruned.product()
             datafile = 'genEvent-%04d.csv' % event.eventAuxiliary().event()
 
         with open(os.path.join(datadir, datafile), 'w') as f:
-            f.write("jet,constituent,eta,phi,px,py,pz,p\n")
+            f.write("jet,constituent,eta,phi,px,py,pz,p,vjet\n")
 
             for j, jet in enumerate(jets.product()):
+                # MC Truth matching
+                vjet = 'nan'
+                if isGen:
+                    for p in pruned:
+                        if abs(p.pdgId()==23) and vjet != True:
+                            vjet = deltaR(jet, p) < 0.1
+
                 constituents = []
                 for candidate in [ jet.daughter(i) for i in range(jet.numberOfDaughters()) ]:
                     if candidate.numberOfDaughters() == 0:
@@ -52,7 +71,7 @@ def process(events, isGen, n):
                 for i, c in enumerate(constituents):
                     pinv = 1.0 / c.p()
                     px, py, pz = pinv * c.px(), pinv * c.py(), pinv * c.pz()
-                    f.write("%d,%d,%f,%f,%f,%f,%f,%f\n" % (j, i, c.eta(), c.phi(), px, py, pz, c.p()))
+                    f.write("%d,%d,%f,%f,%f,%f,%f,%f,%s\n" % (j, i, c.eta(), c.phi(), px, py, pz, c.p(), vjet))
 
             f.close()
 
