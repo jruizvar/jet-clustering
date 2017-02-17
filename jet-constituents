@@ -16,15 +16,24 @@ datadir = os.path.join(os.getcwd(), 'data')
 
 default_file = "root://eoscms.cern.ch//eos/cms/store/mc/RunIISummer16MiniAODv2/BulkGravToZZToZhadZhad_narrow_M-1800_13TeV-madgraph/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/60000/48313E83-C4BD-E611-9A1C-001C23BED459.root"
 
-def process(events, n):
+use_generator_level = False
+
+def process(events, isGen, n):
     label = "slimmedJetsAK8"
     jets  = Handle("std::vector<pat::Jet>")
+
+    if isGen:
+        label = "slimmedGenJetsAK8"
+        jets  = Handle("std::vector<reco::GenJet>")
 
     for e, event in enumerate(events):
         if e >= n: return
 
         event.getByLabel(label, jets)
         datafile = 'event-%04d.csv' % event.eventAuxiliary().event()
+
+        if isGen:
+            datafile = 'genEvent-%04d.csv' % event.eventAuxiliary().event()
 
         with open(os.path.join(datadir, datafile), 'w') as f:
             f.write("jet,constituent,eta,phi,px,py,pz,p\n")
@@ -52,8 +61,8 @@ if __name__ == "__main__":
         os.mkdir(datadir)
 
     if len(sys.argv) == 1:
-        process(Events(default_file), 10)
+        process(Events(default_file), use_generator_level, 10)
     elif len(sys.argv) == 2:
-        process(Events(default_file), int(sys.argv[1]))
+        process(Events(default_file), use_generator_level, int(sys.argv[1]))
     else:
-        process(Events(sys.argv[1]), int(sys.argv[2]))
+        process(Events(sys.argv[1]),  use_generator_level, int(sys.argv[2]))
