@@ -17,7 +17,7 @@ datadir = os.path.join(os.getcwd(), 'data')
 default_file = "root://eoscms.cern.ch//eos/cms/store/mc/RunIISummer16MiniAODv2/BulkGravToZZToZhadZhad_narrow_M-1800_13TeV-madgraph/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/60000/48313E83-C4BD-E611-9A1C-001C23BED459.root"
 
 def process(events, n):
-    label = "slimmedGenJets"
+    label = "slimmedGenJetsAK8"
     jets  = Handle("std::vector<reco::GenJet>")
 
     for e, event in enumerate(events):
