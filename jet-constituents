@@ -45,21 +45,22 @@ def process(events, isGen, n):
         datafile = 'event-%04d.csv' % event.eventAuxiliary().event()
 
         if isGen:
-            event.getByLabel("prunedGenParticles", gens)
             datafile = 'genEvent-%04d.csv' % event.eventAuxiliary().event()
+            event.getByLabel("prunedGenParticles", gens)
+            Z_boson_list = list(p for p in gens.product() if abs(p.pdgId()) is Z_boson_pdgId)
 
         with open(os.path.join(datadir, datafile), 'w') as f:
             f.write("jet,constituent,eta,phi,px,py,pz,p,vjet\n")
 
             for j, jet in enumerate(jets.product()):
                 # MC Truth matching
-                vjet = 'nan'
                 if isGen:
-                    for p in gens.product():
-                        if vjet == True:
+                    for Z_boson in Z_boson_list: 
+                        vjet = deltaR(jet, Z_boson) < match_threshold
+                        if vjet is True:
                             break
-                        elif abs(p.pdgId()) == Z_boson_pdgId:
-                            vjet = deltaR(jet, p) < match_threshold
+                else:
+                    vjet = 'nan'
 
                 constituents = []
                 for candidate in [ jet.daughter(i) for i in range(jet.numberOfDaughters()) ]:
